@@ -605,11 +605,17 @@ p {
 
 .galeria-swiper {
   width: 100%;
-  padding: 10px 0 30px;
+  padding: 10px 0 0;
+  height: 336px;
 }
 
 .galeria-swiper .swiper-slide {
-  width: auto !important;
+  height: auto;
+}
+
+/* gap vertical entre filas del grid — forzado igual al horizontal */
+.galeria-swiper .swiper-wrapper {
+  row-gap: 8px !important;
 }
 
 .galeria-img-wrap {
@@ -620,9 +626,8 @@ p {
 }
 
 .galeria-img-wrap img {
-  height: 260px;
-  width: auto;
-  max-width: 380px;
+  height: 164px;
+  width: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.5s ease;
@@ -716,6 +721,11 @@ p {
 .lightbox-next { right: 20px; }
 
 /* Swiper dots */
+.galeria-pagination {
+  bottom: 0 !important;
+  transform: translateY(28px);
+}
+
 .swiper-pagination-bullet {
   background: rgba(255,255,255,0.3);
   opacity: 1;
@@ -869,14 +879,11 @@ p {
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.07);
-  height: 100%;
-  min-height: 350px;
 }
 
 .map-wrapper iframe {
   width: 100%;
-  height: 100%;
-  min-height: 350px;
+  height: 600px;
   display: block;
   border: none;
   filter: grayscale(30%) contrast(1.1) brightness(0.85);
@@ -1026,3 +1033,148 @@ footer {
   #backToTop, .whatsapp-float { right: 16px; }
   .whatsapp-float { bottom: 82px; }
 }
+
+/* ---- Marquee 3 filas clientes ---- */
+@keyframes marquee-left  { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes marquee-right { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+
+.logos-marquee-wrap {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  /* fade en los bordes */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.logos-row { overflow: hidden; }
+.logos-track {
+  display: flex;
+  gap: 0.75rem;
+  width: max-content;
+  animation: marquee-left 30s linear infinite;
+}
+.logos-track--reverse {
+  animation: marquee-right 30s linear infinite;
+}
+.logos-marquee-wrap:hover .logos-track { animation-play-state: paused; }
+
+.logo-grid-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  width: 180px;
+  height: 120px;
+  flex-shrink: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.logo-grid-item:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.15);
+}
+.logo-grid-item img {
+  max-width: 140px;
+  max-height: 90px;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(30%);
+  opacity: 0.85;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+.logo-grid-item:hover img {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* ---- Mapa ---- */
+@media (max-width: 991.98px) {
+  .map-wrapper iframe { height: 300px; }
+}
+
+/* ---- Direcciones en 2 columnas ---- */
+.contact-dir-col { padding: 0.35rem 1.5rem; }
+.contact-dir-col--only { padding: 0.35rem 1.5rem; }
+.contact-dir-col--border { border-left: 1px solid rgba(255,255,255,0.08); }
+@media (max-width: 767.98px) {
+  .contact-dir-col--border { border-left: none; border-top: 1px solid rgba(255,255,255,0.08); }
+}
+
+/* ---- Card WhatsApp al fondo de la columna ---- */
+.contacto-card--wa {
+  padding: 1rem 1.5rem;
+  margin-top: auto;
+  height: auto !important;
+}
+.wa-contact-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.wa-contact-text {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.wa-icon {
+  font-size: 2rem;
+  color: #25d366;
+  flex-shrink: 0;
+}
+.wa-contact-text strong {
+  display: block;
+  color: #fff;
+  font-size: 0.95rem;
+  margin-bottom: 0.15rem;
+}
+.wa-contact-text span {
+  font-size: 0.8rem;
+  color: var(--text-mid);
+}
+
+/* ---- Botón WhatsApp inline ---- */
+.btn-whatsapp-sm {
+  background: #25d366;
+  color: #fff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+.btn-whatsapp-sm:hover { opacity: 0.85; color: #fff; }
+
+/* ---- Formulario de contacto ---- */
+.form-title {
+  font-size: 1rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 1.2rem;
+  font-family: var(--font-head);
+}
+.form-label {
+  font-size: 0.82rem; font-weight: 500;
+  color: var(--text-mid); margin-bottom: 0.35rem;
+}
+.form-control-amr {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; color: #fff;
+  font-size: 0.88rem; padding: 0.6rem 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+.form-control-amr::placeholder { color: rgba(255,255,255,0.25); }
+.form-control-amr:focus {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(224,83,6,0.15);
+  color: #fff; outline: none;
+}
+.form-select.form-control-amr option { background: #1a1a1a; color: #fff; }

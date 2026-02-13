@@ -134,29 +134,86 @@ function initClientsMarquee() {
 initClientsMarquee();
 
 /* ------------------------------------------------------------------
-   8. GALERÍA - Swiper + Lightbox
+   8. TESTIMONIOS — generación dinámica desde array
+   Para agregar un testimonio nuevo: añadir un objeto al array.
+   driveId: el ID del archivo en Google Drive (de la URL de compartir)
+------------------------------------------------------------------ */
+const testimonios = [
+  {
+    nombre:  'Transportes Arriaza — Miguel Arriaza',
+    driveId: '1-R3FVSkN318LEwR_H-WYWPditJ_cFjct'
+  },
+  {
+    nombre:  'Transportes Lizana Cargo — Jesús Lizana',
+    driveId: '1W9INwJhdWU8K58EVI3jvi_R4-zAfhw3m'
+  },
+  // — Agrega nuevos testimonios aquí, siguiendo el mismo formato:
+  // { nombre: 'Empresa — Nombre Persona', driveId: 'ID_DEL_VIDEO_EN_DRIVE' },
+];
+
+function initTestimonios() {
+  const grid = document.getElementById('testimoniosGrid');
+  if (!grid) return;
+
+  // Determina el ancho de columna según cantidad de testimonios
+  const colClass = testimonios.length === 1 ? 'col-lg-8 col-md-10'
+                 : testimonios.length === 2 ? 'col-lg-5 col-md-6'
+                 : 'col-lg-4 col-md-6';
+
+  testimonios.forEach((t, i) => {
+    const delay = i === 0 ? 'reveal-delay-1' : i === 1 ? 'reveal-delay-2' : 'reveal-delay-3';
+    const col = document.createElement('div');
+    col.className = `${colClass} reveal ${delay}`;
+    col.innerHTML = `
+      <div class="testimonio-card">
+        <div class="testimonio-header">
+          <i class="fa-solid fa-quote-left me-2"></i>${t.nombre}
+        </div>
+        <div class="testimonio-video">
+          <iframe
+            src="https://drive.google.com/file/d/${t.driveId}/preview"
+            allow="autoplay"
+            loading="lazy"
+            title="Testimonio ${t.nombre}">
+          </iframe>
+        </div>
+      </div>`;
+    grid.appendChild(col);
+  });
+
+  // Registrar los nuevos elementos en el observer de reveal
+  grid.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}
+
+/* ------------------------------------------------------------------
+   9. GALERÍA - Swiper + Lightbox
 ------------------------------------------------------------------ */
 function initGallerySwiper() {
   if (typeof Swiper === 'undefined') return;
 
   new Swiper('.galeria-swiper', {
-    slidesPerView: 'auto',
-    spaceBetween: 16,
+    slidesPerView: 3,
+    spaceBetween: 8,
     loop: true,
     grabCursor: true,
+    grid: {
+      rows: 2,
+      fill: 'row',
+    },
     autoplay: {
       delay: 3000,
       disableOnInteraction: false,
       pauseOnMouseEnter: true,
     },
     pagination: {
-      el: '.swiper-pagination',
+      el: '.galeria-pagination',
       clickable: true,
     },
     breakpoints: {
-      0:   { spaceBetween: 10 },
-      600: { spaceBetween: 14 },
-      992: { spaceBetween: 16 },
+      0:   { slidesPerView: 1, grid: { rows: 2 }, spaceBetween: 8 },
+      576: { slidesPerView: 2, grid: { rows: 2 }, spaceBetween: 8 },
+      992: { slidesPerView: 3, grid: { rows: 2 }, spaceBetween: 8 },
+      1200:{ slidesPerView: 4, grid: { rows: 2 }, spaceBetween: 8 },
     }
   });
 }
@@ -221,9 +278,46 @@ function initLightbox() {
 }
 
 /* ------------------------------------------------------------------
-   10. INIT al cargar el DOM
+   10. TOGGLE LOGOS CLIENTES
+------------------------------------------------------------------ */
+function toggleLogos() {
+  const grid = document.getElementById('logosGrid');
+  const btn  = document.getElementById('logosToggleBtn');
+  const expanded = grid.classList.toggle('expanded');
+  if (expanded) {
+    btn.innerHTML = 'Ver menos <i class="fa-solid fa-chevron-up ms-1"></i>';
+  } else {
+    btn.innerHTML = 'Ver todos los clientes <i class="fa-solid fa-chevron-down ms-1"></i>';
+  }
+}
+
+/* ------------------------------------------------------------------
+   11. FORMULARIO DE CONTACTO — redirige action según área
+------------------------------------------------------------------ */
+function initContactForm() {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+
+  const emails = {
+    gerencia:   'antonio.milla@amrasesorias.cl',
+    prevencion: 'contacto@amrasesorias.cl',
+    finanzas:   'finanzas@amrasesorias.cl'
+  };
+
+  form.addEventListener('submit', function(e) {
+    const area = document.getElementById('contactArea').value;
+    if (emails[area]) {
+      form.action = 'https://formsubmit.co/' + emails[area];
+    }
+  });
+}
+
+/* ------------------------------------------------------------------
+   11. INIT al cargar el DOM
 ------------------------------------------------------------------ */
 document.addEventListener('DOMContentLoaded', () => {
+  initTestimonios();
   initGallerySwiper();
   initLightbox();
+  initContactForm();
 });
